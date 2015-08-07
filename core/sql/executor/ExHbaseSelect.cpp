@@ -78,6 +78,7 @@ ExWorkProcRetcode ExHbaseScanTaskTcb::work(short &rc)
 					   tcb_->columns_, -1,
 					   tcb_->hbaseAccessTdb().readUncommittedScan(),
 					   tcb_->hbaseAccessTdb().getHbasePerfAttributes()->cacheBlocks(),
+					   tcb_->hbaseAccessTdb().getHbasePerfAttributes()->useSmallScanner(),//~~EO
 					   tcb_->hbaseAccessTdb().getHbasePerfAttributes()->numCacheRows(),
 					   FALSE, 
 					   (tcb_->hbaseFilterColumns_.entries() > 0 ?
@@ -262,6 +263,7 @@ ExWorkProcRetcode ExHbaseScanRowwiseTaskTcb::work(short &rc)
 					   tcb_->columns_, -1,
 					   tcb_->hbaseAccessTdb().readUncommittedScan(),
 					   tcb_->hbaseAccessTdb().getHbasePerfAttributes()->cacheBlocks(),
+					   tcb_->hbaseAccessTdb().getHbasePerfAttributes()->useSmallScanner(),//~~EO
 					   tcb_->hbaseAccessTdb().getHbasePerfAttributes()->numCacheRows(),
 					   FALSE, 
 					   (tcb_->hbaseFilterColumns_.entries() > 0 ?
@@ -468,6 +470,7 @@ ExWorkProcRetcode ExHbaseScanSQTaskTcb::work(short &rc)
 					   tcb_->columns_, -1,
 					   tcb_->hbaseAccessTdb().readUncommittedScan(),
 					   tcb_->hbaseAccessTdb().getHbasePerfAttributes()->cacheBlocks(),
+					   tcb_->hbaseAccessTdb().getHbasePerfAttributes()->useSmallScanner(),//~~EO
 					   tcb_->hbaseAccessTdb().getHbasePerfAttributes()->numCacheRows(),
                                            TRUE,
 					   (tcb_->hbaseFilterColumns_.entries() > 0 ?
@@ -642,6 +645,7 @@ Lng32 ExHbaseScanSQTaskTcb::getProbeResult(char* &keyData)
 				 tcb_->columns_, -1,
 				 tcb_->hbaseAccessTdb().readUncommittedScan(),
 				 tcb_->hbaseAccessTdb().getHbasePerfAttributes()->cacheBlocks(),
+				 tcb_->hbaseAccessTdb().getHbasePerfAttributes()->useSmallScanner(),
 				 probeSize,
 				 TRUE, NULL, NULL, NULL);
   if (tcb_->setupError(retcode, "ExpHbaseInterface::scanOpen"))

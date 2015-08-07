@@ -262,7 +262,7 @@ public:
   
   HTC_RetCode init();
   
-  HTC_RetCode startScan(Int64 transID, const Text& startRowID, const Text& stopRowID, const LIST(HbaseStr) & cols, Int64 timestamp, bool cacheBlocks, Lng32 numCacheRows,
+  HTC_RetCode startScan(Int64 transID, const Text& startRowID, const Text& stopRowID, const LIST(HbaseStr) & cols, Int64 timestamp, bool cacheBlocks, bool smallScanner,  Lng32 numCacheRows, //~~EO
                         NABoolean preFetch,
 			const LIST(NAString) *inColNamesToFilter, 
 			const LIST(NAString) *inCompareOpList,

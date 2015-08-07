@@ -262,11 +262,21 @@ public:
     NABoolean useMinMdamProbeSize() 
     { return (flags_ & USE_MIN_MDAM_PROBE_SIZE) != 0; };
 
+    //~~EO begin
+    void setUseSmallScanner(NABoolean v)
+    {(v ? flags_ |= USE_SMALL_SCANNER :
+      flags_ &= ~USE_SMALL_SCANNER); };
+    NABoolean useSmallScanner()
+    { return (flags_ & USE_SMALL_SCANNER) != 0; };
+    //~~EO end
+
+
   private:
     enum
     {
       CACHE_BLOCKS               = 0x0001,
-      USE_MIN_MDAM_PROBE_SIZE    = 0x0002
+      USE_MIN_MDAM_PROBE_SIZE    = 0x0002,
+	  USE_SMALL_SCANNER			 = 0x0004 //~~EO
     };
     
     UInt32 flags_;

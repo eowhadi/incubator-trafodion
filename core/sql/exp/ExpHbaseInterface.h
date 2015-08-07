@@ -146,6 +146,7 @@ class ExpHbaseInterface : public NABasicObject
 			 const int64_t timestamp,
 			 const NABoolean readUncommitted,
 			 const NABoolean cacheBlocks,
+			 const NABoolean smallScanner,//~~EO
 			 const Lng32 numCacheRows,
                          const NABoolean preFetch,
 			 const LIST(NAString) *inColNamesToFilter, 
@@ -460,6 +461,7 @@ class ExpHbaseInterface_JNI : public ExpHbaseInterface
 			 const int64_t timestamp,
 			 const NABoolean readUncommitted,
 			 const NABoolean cacheBlocks,
+			 const NABoolean smallScanner,//~~EO
 			 const Lng32 numCacheRows,
                          const NABoolean preFetch,
 			 const LIST(NAString) *inColNamesToFilter, 

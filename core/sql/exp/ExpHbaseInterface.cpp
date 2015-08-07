@@ -123,7 +123,7 @@ Int32 ExpHbaseInterface_JNI::deleteColumns(
   Int64 transID = getTransactionIDFromContext();
 
   int numReqRows = 100;
-  retcode = htc_->startScan(transID, "", "", columns, -1, FALSE, numReqRows, FALSE, 
+  retcode = htc_->startScan(transID, "", "", columns, -1, FALSE, FALSE, numReqRows, FALSE, //~~EO
        NULL, NULL, NULL, NULL);
   if (retcode != HTC_OK)
     return retcode;
@@ -268,7 +268,7 @@ Lng32  ExpHbaseInterface::fetchAllRows(
         break;
   }
 
-  retcode = scanOpen(tblName, "", "", columns, -1, FALSE, FALSE, 100, TRUE, NULL, 
+  retcode = scanOpen(tblName, "", "", columns, -1, FALSE, FALSE,FALSE, 100, TRUE, NULL, //~~EO
        NULL, NULL, NULL);
   if (retcode != HBASE_ACCESS_SUCCESS)
     return retcode;
@@ -692,6 +692,7 @@ Lng32 ExpHbaseInterface_JNI::scanOpen(
 				      const int64_t timestamp,
 				      const NABoolean noXn,
 				      const NABoolean cacheBlocks,
+					  const NABoolean smallScanner,//~~EO
 				      const Lng32 numCacheRows,
                                       const NABoolean preFetch,
 				      const LIST(NAString) *inColNamesToFilter,
@@ -718,7 +719,9 @@ Lng32 ExpHbaseInterface_JNI::scanOpen(
   else
     transID = getTransactionIDFromContext();
   retCode_ = htc_->startScan(transID, startRow, stopRow, columns, timestamp, 
-                             cacheBlocks, numCacheRows, 
+                             cacheBlocks,
+							 smallScanner, //~~EO
+							 numCacheRows,
                              preFetch,
                              inColNamesToFilter,
                              inCompareOpList,
@@ -1256,7 +1259,7 @@ Lng32 ExpHbaseInterface_JNI::isEmpty(
   
   LIST(HbaseStr) columns(heap_);
 
-  retcode = scanOpen(tblName, "", "", columns, -1, FALSE, FALSE, 100, TRUE, NULL, 
+  retcode = scanOpen(tblName, "", "", columns, -1, FALSE, FALSE, FALSE, 100, TRUE, NULL, //~~EO
        NULL, NULL, NULL);
   if (retcode != HBASE_ACCESS_SUCCESS)
     return -HBASE_OPEN_ERROR;

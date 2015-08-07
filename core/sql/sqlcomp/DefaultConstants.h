@@ -3738,6 +3738,8 @@ enum DefaultConstants
 
   //control lob output size when converting to string/memory 
   LOB_OUTPUT_SIZE,
+  // enable HBASE Small Scanner, optimizing scans of size below HFile block size
+  HBASE_SMALL_SCANNER,//~~EO
   // This enum constant must be the LAST one in the list; it's a count,
   // not an Attribute (it's not IN DefaultDefaults; it's the SIZE of it)!
   __NUM_DEFAULT_ATTRIBUTES
