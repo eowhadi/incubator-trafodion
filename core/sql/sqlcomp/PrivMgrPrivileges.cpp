@@ -1,19 +1,22 @@
 //*****************************************************************************
 // @@@ START COPYRIGHT @@@
 //
-// (C) Copyright 2013-2015 Hewlett-Packard Development Company, L.P.
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an "AS IS" BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 //
 // @@@ END COPYRIGHT @@@
 //*****************************************************************************
@@ -431,6 +434,21 @@ PrivMgrPrivileges::PrivMgrPrivileges (
 }
 
 // ----------------------------------------------------------------------------
+// Construct a PrivMgrPrivileges object for an objectUID
+// ----------------------------------------------------------------------------
+PrivMgrPrivileges::PrivMgrPrivileges (
+  const int64_t objectUID,
+  const std::string &metadataLocation,
+  ComDiagsArea *pDiags)
+: PrivMgr(metadataLocation, pDiags),
+  objectUID_(objectUID),
+  grantorID_(0)
+{
+  objectTableName_  = metadataLocation + "." + PRIVMGR_OBJECT_PRIVILEGES;
+  columnTableName_  = metadataLocation + "." + PRIVMGR_COLUMN_PRIVILEGES;
+}
+
+// ----------------------------------------------------------------------------
 // Construct a basic PrivMgrPrivileges object
 // ----------------------------------------------------------------------------
 PrivMgrPrivileges::PrivMgrPrivileges (
@@ -578,7 +596,6 @@ PrivStatus privStatus = getColRowsForGrantee(columnRowList_,granteeID,roleIDs,
 // *                                                       
 // *  Parameters:    
 // *                                                                       
-// *  <objectUID> The unique ID of the object whose grants are being returned
 // *  <objectPrivsRows> Zero or more rows of grants for the object.
 // *                                                                     
 // * Returns: PrivStatus                                               
@@ -589,7 +606,6 @@ PrivStatus privStatus = getColRowsForGrantee(columnRowList_,granteeID,roleIDs,
 // *                                                               
 // *****************************************************************************
 PrivStatus PrivMgrPrivileges::getPrivRowsForObject(
-   const int64_t objectUID,
    std::vector<ObjectPrivsRow> & objectPrivsRows)
    
 {
@@ -1598,7 +1614,6 @@ PrivStatus privStatus = objectPrivsTable.insert(row);
 // *                                                       
 // *  Parameters:    
 // *                                                                       
-// *  <objectUID> The unique ID of the object that grants are being inserted for
 // *  <objectPrivsRows> One or more rows of grants for the object.
 // *                                                                     
 // * Returns: PrivStatus                                               
@@ -1609,7 +1624,6 @@ PrivStatus privStatus = objectPrivsTable.insert(row);
 // *                                                               
 // *****************************************************************************
 PrivStatus PrivMgrPrivileges::insertPrivRowsForObject(
-   const int64_t objectUID,
    const std::vector<ObjectPrivsRow> & objectPrivsRows)
    
 {
@@ -1630,7 +1644,7 @@ PrivStatus PrivMgrPrivileges::insertPrivRowsForObject(
     char granteeTypeString[3] = {0};
     char grantorTypeString[3] = {0};
     
-    row.objectUID_ = objectUID;
+    row.objectUID_ = objectUID_;
     row.objectName_ = rowIn.objectName;
     row.objectType_ = rowIn.objectType;
     row.granteeID_ = rowIn.granteeID;
@@ -2044,10 +2058,8 @@ PrivStatus PrivMgrPrivileges::generateObjectRowList()
 //
 // Params:
 //   objectUsage - the affected object
+//   command - GRANT or REVOKE RESTRICT or REVOKE CASCADE
 //   listOfAffectedObjects - returns the list of affected objects
-//
-// In the future, we want to cache the lists of objects instead of going to the
-// metadata everytime.
 // ****************************************************************************
 PrivStatus PrivMgrPrivileges::getAffectedObjects(
   const ObjectUsage &objectUsage,
@@ -2676,19 +2688,7 @@ PrivStatus PrivMgrPrivileges::revokeObjectPriv (const ComObjectType objectType,
     ObjectUsage *pObj = listOfObjects[i];
     PrivMgrCoreDesc thePrivs = pObj->updatedPrivs.getTablePrivs();
 
-    // If view no longer has select privilege, throw an error
-    if (pObj->objectType == COM_VIEW_OBJECT)
-    {
-      if (!thePrivs.getPriv(SELECT_PRIV))
-      {
-         deleteListOfAffectedObjects(listOfObjects);
-         *pDiags_ << DgSqlCode (-CAT_DEPENDENT_OBJECTS_EXIST)
-                  << DgString0 (pObj->objectName.c_str());
-         return STATUS_ERROR;
-      }
-    }
-
-    int32_t theGrantor = (pObj->objectType == COM_VIEW_OBJECT) ? SYSTEM_AUTH_ID : grantorID_;
+    int32_t theGrantor = grantorID_;
     int32_t theGrantee = pObj->objectOwner;
     int64_t theUID = pObj->objectUID;
 

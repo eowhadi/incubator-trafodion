@@ -1,18 +1,21 @@
 // @@@ START COPYRIGHT @@@
 //
-// (C) Copyright 2014-2015 Hewlett-Packard Development Company, L.P.
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an "AS IS" BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 //
 // @@@ END COPYRIGHT @@@
 
@@ -895,67 +898,71 @@ class CmpSeabaseDDL
 			  NAString &currCatName, NAString &currSchName);
 
   void addConstraints(
-		      ComObjectName &tableName,
-		      ComAnsiNamePart &currCatAnsiName,
-		      ComAnsiNamePart &currSchAnsiName,
-		      StmtDDLAddConstraintPK * pkConstr,
-		      StmtDDLAddConstraintUniqueArray &uniqueConstrArr,
-		      StmtDDLAddConstraintRIArray &riConstrArr,
-		      StmtDDLAddConstraintCheckArray &checkConstrArr,
-                      NABoolean isCompound = FALSE);
+       ComObjectName &tableName,
+       ComAnsiNamePart &currCatAnsiName,
+       ComAnsiNamePart &currSchAnsiName,
+       StmtDDLAddConstraintPK * pkConstr,
+       StmtDDLAddConstraintUniqueArray &uniqueConstrArr,
+       StmtDDLAddConstraintRIArray &riConstrArr,
+       StmtDDLAddConstraintCheckArray &checkConstrArr,
+       NABoolean isCompound = FALSE);
   
   void alterSeabaseTableAddColumn(
-                                  StmtDDLAlterTableAddColumn * alterAddColNode,
-                                  NAString &currCatName, NAString &currSchName);
+       StmtDDLAlterTableAddColumn * alterAddColNode,
+       NAString &currCatName, NAString &currSchName);
   
   void alterSeabaseTableDropColumn(
-				   StmtDDLAlterTableDropColumn * alterDropColNode,
-				   NAString &currCatName, NAString &currSchName);
+       StmtDDLAlterTableDropColumn * alterDropColNode,
+       NAString &currCatName, NAString &currSchName);
   
   short alignedFormatTableAddDropColumn(
-                                        Int64 objUID,
-                                        NABoolean isAdd,
-                                        const NAString &catalogNamePart,
-                                        const NAString &schemaNamePart,
-                                        const NAString &objectNamePart,
-                                        char * colName, const NAColumn * nacol);
+       Int64 objUID,
+       NABoolean isAdd,
+       const NAString &catalogNamePart,
+       const NAString &schemaNamePart,
+       const NAString &objectNamePart,
+       char * colName, const NAColumn * nacol);
   
   short recreateViews(ExeCliInterface &cliInterface,
                       NAList<NAString> &viewNameList,
                       NAList<NAString> &viewDefnList);
 
   void alterSeabaseTableAlterIdentityColumn(
-                                            StmtDDLAlterTableAlterColumnSetSGOption * alterIdentityColNode,
-                                            NAString &currCatName, NAString &currSchName);
+       StmtDDLAlterTableAlterColumnSetSGOption * alterIdentityColNode,
+       NAString &currCatName, NAString &currSchName);
+  
+  void alterSeabaseTableAlterColumnDatatype(
+       StmtDDLAlterTableAlterColumnDatatype * alterColumnDatatype,
+       NAString &currCatName, NAString &currSchName);
   
   void alterSeabaseTableAddPKeyConstraint(
-					  StmtDDLAddConstraint * alterAddConstraint,
-					  NAString &currCatName, NAString &currSchName);
+       StmtDDLAddConstraint * alterAddConstraint,
+       NAString &currCatName, NAString &currSchName);
   
   void alterSeabaseTableAddUniqueConstraint(
-					    StmtDDLAddConstraint * alterAddConstraint,
-					    NAString &currCatName, NAString &currSchName);
+       StmtDDLAddConstraint * alterAddConstraint,
+       NAString &currCatName, NAString &currSchName);
   
   short isCircularDependent(
-			    CorrName &ringTable,
-			    CorrName &refdTable,
-			    CorrName &origRingTable,
-			    BindWA *bindWA);
-
+       CorrName &ringTable,
+       CorrName &refdTable,
+       CorrName &origRingTable,
+       BindWA *bindWA);
+  
   void alterSeabaseTableAddRIConstraint(
-					StmtDDLAddConstraint * alterAddConstraint,
-					NAString &currCatName, NAString &currSchName);
-
+       StmtDDLAddConstraint * alterAddConstraint,
+       NAString &currCatName, NAString &currSchName);
+  
   short getCheckConstraintText(StmtDDLAddConstraintCheck *addCheckNode,
 			       NAString &checkConstrText);
-
+  
   short getTextFromMD(
-		      ExeCliInterface * cliInterface,
-		      Int64 constrUID,
-                      Lng32 textType,
-                      Lng32 textSubID,
-		      NAString &constrText);
-    
+       ExeCliInterface * cliInterface,
+       Int64 constrUID,
+       Lng32 textType,
+       Lng32 textSubID,
+       NAString &constrText);
+  
   void alterSeabaseTableAddCheckConstraint(
 					StmtDDLAddConstraint * alterAddConstraint,
 					NAString &currCatName, NAString &currSchName);

@@ -1,19 +1,22 @@
 // **********************************************************************
 // @@@ START COPYRIGHT @@@
 //
-// (C) Copyright 2013-2015 Hewlett-Packard Development Company, L.P.
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an "AS IS" BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 //
 // @@@ END COPYRIGHT @@@
 // **********************************************************************
@@ -616,7 +619,7 @@ public:
   Queue* listOfHbaseFilterColNames() { return listOfUpDeldColNames_; }
   Queue* listOfHbaseCompareOps() { return listOfMergedColNames_; }
 
-  UInt32 convertRowLen() { return convertRowLen_;}
+  UInt32 convertRowLen() const { return convertRowLen_;}
 
   char * keyColName() { return keyColName_; }
 
@@ -710,6 +713,10 @@ public:
   void setAsyncOperations(NABoolean v)
   {(v ? flags_ |= ASYNC_OPERATIONS : flags_ &= ~ASYNC_OPERATIONS); };
   NABoolean asyncOperations() { return (flags_ & ASYNC_OPERATIONS) != 0; };
+
+  void setUseCif(NABoolean v)
+        {(v ? flags2_ |= USE_CIF : flags_ &= ~USE_CIF); };
+  NABoolean getUseCif() { return (flags_ & USE_CIF) != 0; };
 
   void setCanAdjustTrafParams(NABoolean v)
    {(v ? flags2_ |= TRAF_UPSERT_ADJUST_PARAMS : flags2_ &= ~TRAF_UPSERT_ADJUST_PARAMS); };
@@ -845,6 +852,10 @@ public:
 
    UInt32 getMaxErrorRows() const{ return maxErrorRows_; }
    void setMaxErrorRows(UInt32 v ) { maxErrorRows_= v; }
+  
+   void setDeletePreCondExpr(ExExprPtr exprPtr) {
+        deletePreCondExpr_ = exprPtr;
+   }
 
  protected:
   enum
@@ -864,7 +875,8 @@ public:
     UPDEL_COLNAME_IS_STR             = 0x1000,
     USE_HBASE_XN                     = 0x2000,
     ALIGNED_FORMAT                   = 0x4000,
-    ASYNC_OPERATIONS                 = 0x8000
+    ASYNC_OPERATIONS                 = 0x8000,
+    USE_CIF                          = 0x10000
   };
 
   enum
@@ -910,7 +922,7 @@ public:
   UInt32 mergeInsertRowLen_;
   UInt32 returnFetchedRowLen_;
   UInt32 returnUpdatedRowLen_;
-
+  
   UInt32 rowIdLen_;
   UInt32 outputRowLen_;
   UInt32 rowIdAsciiRowLen_;
@@ -940,6 +952,7 @@ public:
   ExExprPtr encodedKeyExpr_;
 
   ExExprPtr keyColValExpr_;
+  ExExprPtr deletePreCondExpr_;
   ExExprPtr hbaseFilterExpr_;
 
   ExCriDescPtr workCriDesc_;      

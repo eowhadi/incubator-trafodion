@@ -2,19 +2,22 @@
 /**********************************************************************
 // @@@ START COPYRIGHT @@@
 //
-// (C) Copyright 1994-2015 Hewlett-Packard Development Company, L.P.
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an "AS IS" BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 //
 // @@@ END COPYRIGHT @@@
 **********************************************************************/
@@ -2484,6 +2487,7 @@ static void enableMakeQuotedStringISO88591Mechanism()
 %type <pStmtDDL>  		alter_table_drop_column_clause
 %type <pStmtDDL>  		alter_table_alter_column_clause //++ MV
 %type <pStmtDDL>  		alter_table_alter_column_default_value 
+%type <pStmtDDL>  		alter_table_alter_column_datatype
 %type <pStmtDDL>  		alter_table_alter_column_set_sg_option 
 %type <boolean>   		alter_column_type //++ MV
 %type <pStmtDDL>  		alter_table_set_constraint_clause
@@ -31075,6 +31079,12 @@ alter_table_action : add_table_constraint_definition
 				  $$ = $1;
 				  
 				}                               
+		      | alter_table_alter_column_datatype
+			{
+      				$$ = $1;
+
+			}
+			
 		      | alter_table_alter_column_default_value 
 			{
       				$$ = $1;
@@ -31132,6 +31142,18 @@ alter_table_column_clause : TOK_COLUMN identifier heading
                                        PARSERHEAP());
                                   delete $2;
                                 }
+
+// type pStmtDDL
+alter_table_alter_column_datatype : TOK_ALTER TOK_COLUMN column_name predefined_type
+				{
+                                  $$ = new (PARSERHEAP())
+                                    StmtDDLAlterTableAlterColumnDatatype(
+                                         *$3, // column name
+                                         $4 );
+                                  delete $3;
+                                  restoreInferCharsetState();
+				}
+
 
 // type pStmtDDL
 alter_table_alter_column_default_value : TOK_ALTER TOK_COLUMN column_name TOK_DEFAULT enableCharsetInferenceInColDefaultVal alter_col_default_clause_arg
@@ -32561,6 +32583,7 @@ nonreserved_word :      TOK_ABORT
                       | TOK_CONTROL
                       | TOK_COPY
                       | TOK_COST
+                      | TOK_CPP
                       | TOK_CPU
                       | TOK_CREATE_LIBRARY
                       | TOK_CREATE_MV
