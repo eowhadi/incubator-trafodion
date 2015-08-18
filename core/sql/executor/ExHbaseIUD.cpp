@@ -3837,9 +3837,7 @@ ExWorkProcRetcode ExHbaseAccessSQRowsetTcb::work()
           }
           else
             step_ = ALL_DONE;
-     }
-
-
+      }
       switch (step_)
 	{
 	case NOT_STARTED:
@@ -3887,16 +3885,10 @@ ExWorkProcRetcode ExHbaseAccessSQRowsetTcb::work()
 	    setupListOfColNames(hbaseAccessTdb().listOfFetchedColNames(),
 				columns_);
 
-	    if (hbaseAccessTdb().getAccessType() == ComTdbHbaseAccess::SELECT_) {
-	        retcode = ehi_->getHTable(table_);
-	        if (setupError(retcode, "ExpHbaseInterface::getHTable")) {
-	           step_ = HANDLE_ERROR;
-		   break;
-	        }
-	        step_ = SETUP_SELECT;
-            }
+	    if (hbaseAccessTdb().getAccessType() == ComTdbHbaseAccess::SELECT_) 
+	       step_ = SETUP_SELECT;
             else
-	      step_ = SETUP_UMD;
+	       step_ = SETUP_UMD;
 	  }
 	  break;
 	case SETUP_SELECT:
@@ -3976,7 +3968,7 @@ ExWorkProcRetcode ExHbaseAccessSQRowsetTcb::work()
               // But EOD is never returned, instead HBASE_ACCESS_NO_ROW is returned
               // when no row is found in CREATE_ROW step
               if (retcode == HBASE_ACCESS_EOR) {
-                 step_ = SETUP_SELECT;
+                 step_ = RS_CLOSE;
                  break;
               }
               if (retcode == HBASE_ACCESS_EOD) {
@@ -4081,11 +4073,13 @@ ExWorkProcRetcode ExHbaseAccessSQRowsetTcb::work()
 	  {
            if (numRowsInDirectBuffer() > 0) {
               short numRowsInBuffer = patchDirectRowIDBuffers();
-	      retcode = ehi_->getRows(hbaseAccessTdb().getRowIDLen(),
+	      retcode = ehi_->getRowsOpen(
+                            table_,
+                            hbaseAccessTdb().getRowIDLen(),
                             rowIDs_, 
                             columns_);
               currRowNum_ = 0;
-	      if (setupError(retcode, "ExpHbaseInterface::getRows"))
+	      if (setupError(retcode, "ExpHbaseInterface::getRowsOpen"))
 	      {
 		step_ = HANDLE_ERROR;
 		break;
@@ -4277,13 +4271,9 @@ ExWorkProcRetcode ExHbaseAccessSQRowsetTcb::work()
 	      return rc;
 
 	    if (step_ == DONE)
-		step_ = SETUP_UMD;
-	    else {
-		if (hbaseAccessTdb().getAccessType() == ComTdbHbaseAccess::SELECT_)
-		   step_ = RS_CLOSE; 
-                else
-		   step_ = NOT_STARTED;
-	      }
+	       step_ = SETUP_UMD;
+	    else 
+	       step_ = NOT_STARTED;
 	  }
 	  break;
 	} // switch
