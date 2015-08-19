@@ -3135,12 +3135,11 @@ void Generator::setHBaseCacheBlocks(Int32 hbaseRowSize, double estRowsAccessed,
 void Generator::setHBaseSmallScanner(Int32 hbaseRowSize, double estRowsAccessed,
 						Lng32 hbaseBlockSize, ComTdbHbaseAccess::HbasePerfAttributes * hbpa)
 {
-  if (CmpCommon::getDefault(HBASE_SMALL_SCANNER) == DF_ON)
-    hbpa->setUseSmallScanner(TRUE);
-  else if (CmpCommon::getDefault(HBASE_SMALL_SCANNER) == DF_SYSTEM)
+  if (CmpCommon::getDefault(HBASE_SMALL_SCANNER) == DF_SYSTEM)
   {
 	  if((hbaseRowSize*estRowsAccessed)<hbaseBlockSize)
 		  hbpa->setUseSmallScanner(TRUE);
-  }
+  }else if (CmpCommon::getDefault(HBASE_SMALL_SCANNER) == DF_ON)
+	    hbpa->setUseSmallScanner(TRUE);
 }
 //~~EO end
